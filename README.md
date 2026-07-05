@@ -1,47 +1,63 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="TST — Token & Seat Tuner">
+</p>
 
-# Revit Licensing Optimizer — Interactive App
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.11-7dd87d?style=flat-square&logo=python&logoColor=050507" alt="python 3.11">
+  <img src="https://img.shields.io/badge/streamlit-1.54-7dd87d?style=flat-square&logo=streamlit&logoColor=050507" alt="streamlit 1.54">
+  <img src="https://img.shields.io/badge/docker-ready-7dd87d?style=flat-square&logo=docker&logoColor=050507" alt="docker ready">
+  <img src="https://img.shields.io/badge/license-MIT-4a90ff?style=flat-square" alt="license MIT">
+</p>
 
-A Streamlit web app to optimize the mix of Autodesk Revit named-user seats and Flex tokens.
-Built for easy "what-if" analyses and executive-friendly visuals.
+## what it is
 
-## Quickstart (Docker)
+TST (token & seat tuner) is a decision-support tool for Autodesk Revit licensing. It models your team as three usage cohorts — heavy authors, medium/occasional contributors, and light reviewers — each with their own headcount and active days per year, then compares the annual cost of named-user seats against Flex tokens across three strategies: **Lean**, **Balanced**, and **Max**.
 
-```bash
-# 1) Build
-docker build -t TST .
+Adjust seat price, token price, tokens consumed per Revit day, and a usage buffer in the sidebar, and the app recomputes cost for all three strategies live. It surfaces the cheapest option as a KPI-driven recommendation, a sortable cost table, a cost-by-strategy chart, and an optional price-sensitivity grid you can export to CSV.
 
-# 2) Run
-docker run --rm -p 8501:8501 revit-licensing-optimizer
+## how the model thinks
 
-# 3) Open
-# Visit http://localhost:8501 in your browser
+```mermaid
+flowchart LR
+    A["headcount + usage mix\n(heavy / medium / light\nauthors x days/year)"] --> B["tokens-needed calc\ncount x days x tokens/day\nx (1 + buffer%)"]
+    P["seat price + token price"] --> C
+    B --> C["three strategy scenarios"]
+    C --> D["cost comparison\n(sorted, cheapest first)"]
+    D --> E["recommendation\n+ chart + CSV grid"]
 ```
 
-## Direct (no Docker)
+| strategy | seats cover | flex tokens cover |
+|---|---|---|
+| **lean** | heavy authors only | medium + light authors |
+| **balanced** | heavy + medium authors | light authors |
+| **max** | all authors | small 5% burst reserve (1 day) |
+
+Breakeven days per user is computed as `seat_price / (tokens_per_day x token_price)` — the number of Revit-days at which a Flex token spend equals one annual seat.
+
+Turning on the price sensitivity grid runs every strategy across a cartesian product of candidate seat and token prices, so you can see which strategy wins as pricing shifts — the result is downloadable as CSV.
+
+## quick start
+
 ```bash
 pip install -r requirements.txt
 streamlit run TST.py
 ```
 
-## What it does
-- Lets you enter team size and usage cohorts (heavy/medium/light authors)
-- Adjust seat price, token price, tokens per day, and buffer
-- Compares three strategies:
-    1. **Lean**: seats for heavy; medium+light on Flex
-    2. **Balanced**: seats for heavy+medium; light on Flex
-    3. **Max**: all authors get seats (with a tiny Flex burst reserve)
-- Shows the **cheapest** option and the break-even days per user
-- Optional **price sensitivity grid** for multiple price points
+## docker
 
-## Notes
-- Default assumptions: 300 employees, 50 projects, 90/40/20 heavy/medium/light authors with 220/150/40 days.
-- Flex consumption default: 10 tokens/day/user with a 10% buffer.
-- Break-even days ≈ `seat_price / (10 × token_price)`
+```bash
+docker build -t tst .
+docker run --rm -p 8501:8501 tst
+```
 
-## Customize
-- Edit `TST.py` to change formulas or add more scenarios.
-- If you have real usage logs, replace inputs with a CSV uploader and compute cohort sizes automatically.
+Then open http://localhost:8501.
 
-## Security & Networking
-- The app runs read-only analytics; it stores nothing server-side.
-- To share inside your network, deploy the Docker container to an internal host and reverse-proxy behind HTTPS.
+<!-- TODO: screenshot — Ali drops assets/screenshot.png locally (binaries can't ship through this pipeline) -->
+
+## privacy
+
+Everything runs locally — no data leaves your machine. There's no external API call, no telemetry, and no server-side storage; inputs live in the Streamlit session and any exported CSV is generated and downloaded client-side.
+
+## license
+
+MIT — see [LICENSE](LICENSE).

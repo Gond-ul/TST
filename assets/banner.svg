@@ -1,0 +1,34 @@
+<svg width="1200" height="240" viewBox="0 0 1200 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TST — token and seat tuner">
+  <title>TST — token &amp; seat tuner</title>
+  <defs>
+    <style>
+      .mono { font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Monaco, 'Cascadia Mono', monospace; }
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="1200" height="240" fill="#050507" />
+
+  <!-- inset surface card -->
+  <rect x="16" y="16" width="1168" height="208" rx="24" fill="#0a0a0c" stroke="rgba(232,230,225,0.12)" stroke-width="1.5" />
+
+  <!-- blue bracket accent, left -->
+  <path d="M 64 76 L 48 76 L 48 164 L 64 164" fill="none" stroke="#4a90ff" stroke-width="2.5" stroke-linecap="square" />
+  <!-- blue bracket accent, right -->
+  <path d="M 1136 76 L 1152 76 L 1152 164 L 1136 164" fill="none" stroke="#4a90ff" stroke-width="2.5" stroke-linecap="square" />
+
+  <!-- wordmark -->
+  <text x="96" y="120" class="mono" font-size="76" font-weight="800" letter-spacing="6" fill="#7dd87d">TST</text>
+
+  <!-- thin blue accent underline beneath wordmark -->
+  <rect x="98" y="136" width="220" height="3" fill="#4a90ff" />
+
+  <!-- subtitle -->
+  <text x="96" y="168" class="mono" font-size="21" font-weight="600" letter-spacing="1" fill="#e8e6e1">token &amp; seat tuner</text>
+
+  <!-- one-liner -->
+  <text x="96" y="194" class="mono" font-size="14" fill="#8a8780">revit licensing, decided with numbers</text>
+
+  <!-- bottom-right label -->
+  <text x="1104" y="204" text-anchor="end" class="mono" font-size="13" letter-spacing="0.5" fill="#4a90ff">streamlit app</text>
+</svg>
